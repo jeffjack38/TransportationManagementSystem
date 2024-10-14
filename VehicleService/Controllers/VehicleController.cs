@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using VehicleService.Models;
 using VehicleService.Repositories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace VehicleService.Controllers
 {
@@ -63,6 +64,7 @@ namespace VehicleService.Controllers
         }
 
         // POST /api/vehicles
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult> CreateVehicle([FromBody] VehicleDTO vehicleDTO)
         {
@@ -79,6 +81,7 @@ namespace VehicleService.Controllers
         }
 
         // PUT /api/vehicles/{id}
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateVehicle(int id, [FromBody] VehicleDTO vehicleDTO)
         {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShipmentService.DTOs;
 using ShipmentService.Models;
 using ShipmentService.Repositories;
@@ -42,6 +43,7 @@ namespace ShipmentService.Controllers
 
 
         // POST /api/shipments
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult> CreateShipment([FromBody] ShipmentDTO shipmentDTO)
         {
@@ -86,6 +88,7 @@ namespace ShipmentService.Controllers
         }
 
         // PUT /api/shipments/{id}
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateShipment(int id, [FromBody] ShipmentDTO shipmentDTO)
         {
