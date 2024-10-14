@@ -9,6 +9,12 @@ namespace ShipmentService.Repositories
         Task UpdateShipmentAsync(Shipment shipment);       // Update an existing shipment
         Task UpdateShipmentStatusAsync(int shipmentId, string status);  // Update the status of a shipment
         Task<Shipment> GetShipmentByIdAsync(int shipmentId);   // Retrieve a shipment by its ID
+        Task<IEnumerable<Shipment>> GetShipmentsAsync();   // Retrieve all shipments
+        Task<IEnumerable<Shipment>> GetShipmentsPaginatedAsync(int page, int pageSize);  // method for pagination
+        Task<int> GetTotalShipmentsCountAsync();  // New method to get total count of shipments
+
+
+
     }
 }
 
