@@ -20,6 +20,7 @@ namespace UserService.Services
         private readonly UserDbContext _context;
         private readonly IConfiguration _configuration;
 
+
         public UserServices(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
