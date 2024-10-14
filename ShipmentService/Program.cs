@@ -33,6 +33,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ShipmentDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ShipmentDbContext")));
 
+builder.Services.AddAuthorization(); // Add Authorization
+
 
 var app = builder.Build();
 
