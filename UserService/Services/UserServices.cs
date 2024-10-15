@@ -69,17 +69,17 @@ namespace UserService.Services
 
         // 2. Log in the user and return a JWT token
         public async Task<string> LoginUserAsync(LoginViewModel model)
-        {
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: false, lockoutOnFailure: false);
+{
+    var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: false, lockoutOnFailure: false);
 
-            if (!result.Succeeded)
-            {
-                return null;
-            }
+    if (!result.Succeeded)
+    {
+        return null;
+    }
 
-            var user = await _userManager.FindByEmailAsync(model.Email);
-            return await GenerateJwtToken(user);  // Await the token generation
-        }
+    var user = await _userManager.FindByEmailAsync(model.Email);
+    return await GenerateJwtToken(user);  // Await the token generation
+}
 
         // 3. Retrieve the user's information by ID
         public async Task<User> GetUserByIdAsync(string userId)
@@ -141,18 +141,17 @@ namespace UserService.Services
         }
 
         // Generate JWT token
-        // Generate JWT token
         private async Task<string> GenerateJwtToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);
 
             var claims = new List<Claim>
-    {
-        new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-        new Claim(JwtRegisteredClaimNames.Email, user.Email),
-        new Claim(ClaimTypes.NameIdentifier, user.Id)
-    };
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.Id)
+            };
 
             var roles = await _userManager.GetRolesAsync(user); // Assuming roles are required
             foreach (var role in roles)

@@ -46,6 +46,22 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Seed the Admin User
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var userManager = services.GetRequiredService<UserManager<User>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        await SeedAdminUserAsync(userManager, roleManager);  // Seed the admin user here
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error occurred while seeding: {ex.Message}");
+    }
+}
+
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
@@ -65,3 +81,41 @@ app.MapControllers();
 
 app.Run();
 
+// Seeding method for the Admin User
+async Task SeedAdminUserAsync(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+{
+    // Ensure Admin role exists
+    if (!await roleManager.RoleExistsAsync("Admin"))
+    {
+        await roleManager.CreateAsync(new IdentityRole("Admin"));
+    }
+
+    // Check if the Admin user exists
+    var adminEmail = "admin@example.com";
+    var existingAdmin = await userManager.FindByEmailAsync(adminEmail);
+
+    if (existingAdmin == null)
+    {
+        // Create the Admin user
+        var adminUser = new User
+        {
+            UserName = adminEmail,
+            Email = adminEmail,
+            FirstName = "Admin",
+            LastName = "User",
+            EmailConfirmed = true
+        };
+
+        var result = await userManager.CreateAsync(adminUser, "AdminPassword123!"); // You can choose a strong default password here
+
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+            Console.WriteLine("Admin user seeded.");
+        }
+        else
+        {
+            Console.WriteLine("Failed to seed Admin user.");
+        }
+    }
+}
