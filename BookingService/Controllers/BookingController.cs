@@ -43,7 +43,7 @@ namespace BookingService.Controllers
         }
 
         // POST /api/bookings
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateBooking([FromBody] BookingDTO bookingDTO)
         {
@@ -98,6 +98,32 @@ namespace BookingService.Controllers
             };
 
             return Ok(bookingDTO);
+        }
+
+        // PUT /api/bookings/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateBooking(int id, [FromBody] BookingDTO bookingDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var existingBooking = await _bookingRepository.GetBookingByIdAsync(id);
+            if (existingBooking == null)
+            {
+                return NotFound("Booking not found.");
+            }
+
+            // Update the booking details
+            existingBooking.ShipmentId = bookingDTO.ShipmentId;
+            existingBooking.CustomerName = bookingDTO.CustomerName;
+            existingBooking.BookingDate = bookingDTO.BookingDate;
+            existingBooking.Status = bookingDTO.Status;
+
+            await _bookingRepository.UpdateBookingAsync(existingBooking);
+
+            return NoContent(); // 204 No Content
         }
 
 

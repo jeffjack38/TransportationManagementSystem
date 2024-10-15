@@ -76,6 +76,17 @@ namespace BookingService.Repositories
                 return await connection.QueryAsync<BookingShipmentDTO>(query, new { Offset = (page - 1) * pageSize, PageSize = pageSize });
             }
         }
+
+        public async Task UpdateBookingAsync(Booking booking)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var query = "UPDATE Bookings SET ShipmentId = @ShipmentId, CustomerName = @CustomerName, " +
+                            "BookingDate = @BookingDate, Status = @Status WHERE BookingId = @BookingId";
+
+                await connection.ExecuteAsync(query, booking);
+            }
+        }
     }
 }
 

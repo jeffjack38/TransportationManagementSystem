@@ -10,6 +10,8 @@ namespace BookingService.Repositories
         Task<Booking> GetBookingByIdAsync(int bookingId);
         Task<IEnumerable<Booking>> GetBookingsAsync(int page, int pageSize);  // Pagination support
         Task<(IEnumerable<Booking>, int)> GetBookingsWithCountAsync(int page, int pageSize);  // Add this method for total count
+        Task UpdateBookingAsync(Booking booking);
+
 
     }
 }

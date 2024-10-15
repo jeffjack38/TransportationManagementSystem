@@ -5,6 +5,8 @@ namespace BookingService.DTOs
 {
     public class BookingDTO
     {
+        public int BookingId { get; set; }
+
         [Required(ErrorMessage = "ShipmentId is required.")]
         public int ShipmentId { get; set; }
 

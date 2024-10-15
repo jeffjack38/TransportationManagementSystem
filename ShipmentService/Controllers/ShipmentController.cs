@@ -43,7 +43,7 @@ namespace ShipmentService.Controllers
 
 
         // POST /api/shipments
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult> CreateShipment([FromBody] ShipmentDTO shipmentDTO)
         {
@@ -88,7 +88,7 @@ namespace ShipmentService.Controllers
         }
 
         // PUT /api/shipments/{id}
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateShipment(int id, [FromBody] ShipmentDTO shipmentDTO)
         {

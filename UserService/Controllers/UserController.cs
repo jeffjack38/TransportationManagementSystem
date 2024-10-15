@@ -78,7 +78,6 @@ namespace UserService.Controllers
         }
 
         // 4. Get Current User Info
-        [Authorize]
         [HttpGet("me")]
         public async Task<IActionResult> GetCurrentUser()
         {
@@ -113,7 +112,7 @@ namespace UserService.Controllers
         }
 
         // 6. Delete User Account
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {

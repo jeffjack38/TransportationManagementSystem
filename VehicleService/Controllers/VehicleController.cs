@@ -64,7 +64,7 @@ namespace VehicleService.Controllers
         }
 
         // POST /api/vehicles
-        [Authorize]
+        [Authorize[Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult> CreateVehicle([FromBody] VehicleDTO vehicleDTO)
         {
@@ -81,7 +81,7 @@ namespace VehicleService.Controllers
         }
 
         // PUT /api/vehicles/{id}
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateVehicle(int id, [FromBody] VehicleDTO vehicleDTO)
         {
@@ -104,6 +104,7 @@ namespace VehicleService.Controllers
         }
 
         // PUT /api/vehicles/{id}/assign
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}/assign")]
         public async Task<IActionResult> AssignDriver(int id, [FromBody] int driverId)
         {
