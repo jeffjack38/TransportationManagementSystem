@@ -78,7 +78,7 @@ namespace UserService.Services
             }
 
             var user = await _userManager.FindByEmailAsync(model.Email);
-            return GenerateJwtToken(user);
+            return await GenerateJwtToken(user);  // Await the token generation
         }
 
         // 3. Retrieve the user's information by ID
@@ -141,18 +141,28 @@ namespace UserService.Services
         }
 
         // Generate JWT token
-        private string GenerateJwtToken(User user)
+        // Generate JWT token
+        private async Task<string> GenerateJwtToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);
+
+            var claims = new List<Claim>
+    {
+        new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+        new Claim(JwtRegisteredClaimNames.Email, user.Email),
+        new Claim(ClaimTypes.NameIdentifier, user.Id)
+    };
+
+            var roles = await _userManager.GetRolesAsync(user); // Assuming roles are required
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                    new Claim(ClaimTypes.NameIdentifier, user.Id)
-                }),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
                 Audience = _configuration["Jwt:Audience"],
@@ -162,5 +172,7 @@ namespace UserService.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
+
     }
 }

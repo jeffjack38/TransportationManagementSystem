@@ -64,7 +64,7 @@ namespace VehicleService.Controllers
         }
 
         // POST /api/vehicles
-        [Authorize[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult> CreateVehicle([FromBody] VehicleDTO vehicleDTO)
         {
