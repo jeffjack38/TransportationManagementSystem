@@ -8,18 +8,21 @@ namespace BookingService.Services
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IBookingRepository _bookingRepository;  // Inject BookingRepository
+        private readonly string _shipmentServiceUrl;
 
-        public BookingServices(IHttpClientFactory httpClientFactory, IBookingRepository bookingRepository)
+
+        public BookingServices(IHttpClientFactory httpClientFactory, IBookingRepository bookingRepository, IConfiguration configuration)
         {
             _httpClientFactory = httpClientFactory;
             _bookingRepository = bookingRepository;
+            _shipmentServiceUrl = configuration["ShipmentServiceUrl"];
         }
 
         // Check if shipment is available
         public async Task<bool> IsShipmentAvailableAsync(int shipmentId)
         {
             var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"https://shipmentservice/api/shipments/{shipmentId}");
+            var response = await client.GetAsync($"{_shipmentServiceUrl}/api/Shipment/{shipmentId}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -28,6 +31,7 @@ namespace BookingService.Services
                 return shipment.Status == "Available";
             }
 
+            Console.WriteLine($"Failed to retrieve shipment. StatusCode: {response.StatusCode}");
             return false;
         }
 

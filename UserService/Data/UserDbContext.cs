@@ -10,5 +10,6 @@ namespace UserService.Data
             : base(options)
         {
         }
+
     }
 }

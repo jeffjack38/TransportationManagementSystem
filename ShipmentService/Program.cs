@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ShipmentService.Data;
+using ShipmentService.Repositories;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,14 +25,31 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 // Register DbContext with connection string
 builder.Services.AddDbContext<ShipmentDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ShipmentDbContext")));
+
+// Register repositories
+builder.Services.AddScoped<IShipmentRepository, ShipmentRepository>();
+
 
 builder.Services.AddAuthorization(); // Add Authorization
 
@@ -46,6 +64,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Enable CORS globally
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();

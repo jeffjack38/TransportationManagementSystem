@@ -46,21 +46,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Seed the Admin User
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    try
-    {
-        var userManager = services.GetRequiredService<UserManager<User>>();
-        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-        await SeedAdminUserAsync(userManager, roleManager);  // Seed the admin user here
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Error occurred while seeding: {ex.Message}");
-    }
-}
+
+
 
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
@@ -79,43 +66,61 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// Seed the admin user after the application starts
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var userManager = services.GetRequiredService<UserManager<User>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+    await SeedAdminUser(userManager, roleManager, builder.Configuration);
+}
+
 app.Run();
 
-// Seeding method for the Admin User
-async Task SeedAdminUserAsync(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+async Task SeedAdminUser(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
 {
+    // Retrieve admin credentials from appsettings.json
+    var adminEmail = configuration["AdminUser:Email"];
+    var adminPassword = configuration["AdminUser:Password"];
+    var adminFirstName = configuration["AdminUser:FirstName"];
+    var adminLastName = configuration["AdminUser:LastName"];
+
     // Ensure Admin role exists
     if (!await roleManager.RoleExistsAsync("Admin"))
     {
         await roleManager.CreateAsync(new IdentityRole("Admin"));
     }
 
-    // Check if the Admin user exists
-    var adminEmail = "admin@example.com";
-    var existingAdmin = await userManager.FindByEmailAsync(adminEmail);
-
-    if (existingAdmin == null)
+    // Check if the admin user already exists
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    if (adminUser == null)
     {
-        // Create the Admin user
-        var adminUser = new User
+        // Create a new admin user
+        var newAdmin = new User
         {
             UserName = adminEmail,
             Email = adminEmail,
-            FirstName = "Admin",
-            LastName = "User",
-            EmailConfirmed = true
+            FirstName = adminFirstName,
+            LastName = adminLastName,
+            EmailConfirmed = true // Confirming the email directly to avoid email confirmation process
         };
 
-        var result = await userManager.CreateAsync(adminUser, "AdminPassword123!"); // You can choose a strong default password here
+        var result = await userManager.CreateAsync(newAdmin, adminPassword);
 
         if (result.Succeeded)
         {
-            await userManager.AddToRoleAsync(adminUser, "Admin");
-            Console.WriteLine("Admin user seeded.");
+            // Assign the Admin role
+            await userManager.AddToRoleAsync(newAdmin, "Admin");
+            Console.WriteLine("Admin user seeded successfully.");
         }
         else
         {
-            Console.WriteLine("Failed to seed Admin user.");
+            Console.WriteLine("Error seeding admin user: " + string.Join(", ", result.Errors.Select(e => e.Description)));
         }
+    }
+    else
+    {
+        Console.WriteLine("Admin user already exists.");
     }
 }

@@ -34,6 +34,7 @@ builder.Services.AddDbContext<VehicleDbContext>(options =>
 
 //Register Repository
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
+builder.Services.AddScoped<IDriverRepository, DriverRepository>();
 
 builder.Services.AddAuthorization(); // Add Authorization
 

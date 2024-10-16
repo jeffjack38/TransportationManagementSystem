@@ -15,13 +15,9 @@ namespace BookingService.Controllers
         private readonly IBookingRepository _bookingRepository;
         private readonly BookingServices _bookingServices;
 
-        public BookingController(IBookingRepository bookingRepository)
+        public BookingController(IBookingRepository bookingRepository, BookingServices bookingServices)
         {
             _bookingRepository = bookingRepository;
-        }
-
-        public BookingController(BookingServices bookingServices)
-        {
             _bookingServices = bookingServices;
         }
 
@@ -100,7 +96,8 @@ namespace BookingService.Controllers
             return Ok(bookingDTO);
         }
 
-        // PUT /api/bookings/{id}
+        // PUT /api/booking/{id}
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBooking(int id, [FromBody] BookingDTO bookingDTO)
         {

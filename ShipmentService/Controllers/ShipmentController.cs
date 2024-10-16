@@ -107,7 +107,7 @@ namespace ShipmentService.Controllers
             };
 
             await _shipmentRepository.UpdateShipmentAsync(shipment);
-            return NoContent();
+            return Ok("Shipment updated successfully.");
         }
     }
 }

@@ -14,16 +14,16 @@
         public string LastName { get; set; }
 
         [StringLength(100)]  // Limits the length of Address to 100 characters
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
         [StringLength(50)]  // Limits the length of City to 50 characters
-        public string City { get; set; }
+        public string? City { get; set; }
 
         [StringLength(50)]  // Limits the length of State to 50 characters
-        public string State { get; set; }
+        public string? State { get; set; }
 
         [StringLength(10)]  // Limits the length of ZipCode to 10 characters
-        public string ZipCode { get; set; }
+        public string? ZipCode { get; set; }
 
         public bool IsActive { get; set; } = true;
 

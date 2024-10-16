@@ -2,7 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using BookingService.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using BookingService.Repositories;
 using System.Text;
+using BookingService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +39,26 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
+
+// Register Repos
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+
+// Register Services
+builder.Services.AddScoped<BookingServices>();
+
+
 builder.Services.AddAuthorization(); // Add Authorization
 
 var app = builder.Build();
@@ -49,6 +71,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Enable CORS globally
+app.UseCors("AllowAll");
 
 app.UseAuthentication(); // Enable Authentication
 app.UseAuthorization();  // Enable Authorization
