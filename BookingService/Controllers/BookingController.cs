@@ -22,7 +22,7 @@ namespace BookingService.Controllers
         }
 
 
-        // GET /api/bookings?page=1&pageSize=10
+        // GET /api/Booking?page=1&pageSize=10
         [HttpGet]
         public async Task<IActionResult> GetBookings([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
@@ -38,7 +38,7 @@ namespace BookingService.Controllers
             return Ok(new { Data = bookingDTOs, TotalCount = totalCount });
         }
 
-        // POST /api/bookings
+        // POST /api/Booking
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateBooking([FromBody] BookingDTO bookingDTO)
@@ -74,7 +74,7 @@ namespace BookingService.Controllers
         }
 
 
-        // GET /api/bookings/{id}
+        // GET /api/Bookings/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<BookingDTO>> GetBookingById(int id)
         {
@@ -96,7 +96,7 @@ namespace BookingService.Controllers
             return Ok(bookingDTO);
         }
 
-        // PUT /api/booking/{id}
+        // PUT /api/Booking/{id}
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBooking(int id, [FromBody] BookingDTO bookingDTO)
@@ -120,7 +120,7 @@ namespace BookingService.Controllers
 
             await _bookingRepository.UpdateBookingAsync(existingBooking);
 
-            return NoContent(); // 204 No Content
+            return Ok("Booking updated successfully.");
         }
 
 

@@ -70,7 +70,7 @@ namespace VehicleService.Controllers
             }
 
             await _driverRepository.UpdateDriverAsync(driver);
-            return NoContent();
+            return Ok("Driver updated successfully.");
         }
 
         // DELETE /api/drivers/{id} (Admin Only)
