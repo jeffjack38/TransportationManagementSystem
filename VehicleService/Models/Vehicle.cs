@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace VehicleService.Models
 {
@@ -18,7 +19,9 @@ namespace VehicleService.Models
         public int Year { get; set; }
 
         public int? DriverId { get; set; }  // Nullable in case a vehicle has no driver assigned yet
-        public Driver Driver { get; set; }  // Navigation property
+
+        [JsonIgnore]
+        public Driver? Driver { get; set; }  // Navigation property
     }
 }
 

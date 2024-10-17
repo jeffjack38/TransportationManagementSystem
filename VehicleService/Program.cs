@@ -36,6 +36,13 @@ builder.Services.AddDbContext<VehicleDbContext>(options =>
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IDriverRepository, DriverRepository>();
 
+//allow json serializer to handle cycles by keeping track of object references
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+});
+
+
 builder.Services.AddAuthorization(); // Add Authorization
 
 

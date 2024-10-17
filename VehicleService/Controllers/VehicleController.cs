@@ -87,7 +87,13 @@ namespace VehicleService.Controllers
         {
             if (id != vehicleDTO.VehicleId)
             {
-                return BadRequest();
+                return BadRequest("Vehicle ID mismatch");
+            }
+
+            var existingVehicle = await _vehicleRepository.GetVehicleByIdAsync(id);
+            if (existingVehicle == null)
+            {
+                return NotFound("Vehicle not found");
             }
 
             var vehicle = new Vehicle
@@ -100,7 +106,7 @@ namespace VehicleService.Controllers
             };
 
             await _vehicleRepository.UpdateVehicleAsync(vehicle);
-            return NoContent();
+            return Ok(new { message = "Vehicle updated successfully!", vehicle });
         }
 
         // PUT /api/vehicles/{id}/assign
@@ -109,7 +115,7 @@ namespace VehicleService.Controllers
         public async Task<IActionResult> AssignDriver(int id, [FromBody] int driverId)
         {
             await _vehicleRepository.AssignDriverToVehicleAsync(id, driverId);
-            return NoContent();
+            return Ok(new {message = "Assigned driver success!"});
         }
     }
 }
