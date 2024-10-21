@@ -90,22 +90,39 @@ namespace VehicleService.Controllers
         // PUT /api/drivers/{id} (Admin Only)
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateDriver(int id, [FromBody] Driver driver)
+        public async Task<ActionResult> UpdateDriver(int id, [FromBody] DriverDTO driverDTO)
         {
-            if (id != driver.DriverId || !ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var existingDriver = await _driverRepository.GetDriversByIdAsync(id);
-            if (existingDriver == null)
+            // Custom validation or processing logic here
+            if (driverDTO.Vehicles != null && driverDTO.Vehicles.Count == 0)
+            {
+                return BadRequest("At least one vehicle must be provided.");
+            }
+
+            // Proceed with updating driver
+            var driver = await _driverRepository.GetDriversByIdAsync(id);
+            if (driver == null)
             {
                 return NotFound();
+            }
+
+            driver.Name = driverDTO.Name;
+            driver.LicenseNumber = driverDTO.LicenseNumber;
+
+            // If Vehicles are provided, update them
+            if (driverDTO.Vehicles != null)
+            {
+                // Update logic for vehicles
             }
 
             await _driverRepository.UpdateDriverAsync(driver);
             return Ok("Driver updated successfully.");
         }
+
 
         // DELETE /api/drivers/{id} (Admin Only)
         [Authorize(Roles = "Admin")]
