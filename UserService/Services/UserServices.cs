@@ -10,6 +10,7 @@ using UserService.DTOs;
 using SharedModels.Models;
 using UserService.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace UserService.Services
 {
@@ -90,19 +91,31 @@ namespace UserService.Services
         }
 
         // Retrieve all users
-        public async Task<IEnumerable<UserDTO>> GetAllUsersAsync()
+        public async Task<IEnumerable<UserDTO>> GetAllUsersWithRolesAsync()
         {
-            return await _userManager.Users
-                .Select(user => new UserDTO
+            var users = _userManager.Users.ToList();
+            var userDTOs = new List<UserDTO>();
+
+            foreach (var user in users)
+            {
+                // Get the roles for each user
+                var roles = await _userManager.GetRolesAsync(user);
+
+                var userDTO = new UserDTO
                 {
                     Id = user.Id,
                     Email = user.Email,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     IsActive = user.IsActive,
-                    LastLoginDate = user.LastLoginDate
-                })
-                .ToListAsync();
+                    LastLoginDate = user.LastLoginDate,
+                    Role = roles.FirstOrDefault() // Assign the first role, assuming one role per user
+                };
+
+                userDTOs.Add(userDTO);
+            }
+
+            return userDTOs;
         }
 
 

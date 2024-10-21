@@ -132,7 +132,7 @@ namespace UserService.Controllers
         [HttpGet("all-users")]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _userService.GetAllUsersAsync();
+            var users = await _userService.GetAllUsersWithRolesAsync();
             if (users == null || !users.Any())
             {
                 return NotFound("No users found.");

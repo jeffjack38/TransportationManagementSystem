@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SharedModels.Models;
+using VehicleService.DTOs;
 using VehicleService.Repositories;
 
 namespace VehicleService.Controllers
@@ -12,18 +13,32 @@ namespace VehicleService.Controllers
     public class DriverController : ControllerBase
     {
         private readonly IDriverRepository _driverRepository;
+        private readonly IVehicleRepository _vehicleRepository;
 
-        public DriverController(IDriverRepository driverRepository)
+
+
+        public DriverController(IDriverRepository driverRepository, IVehicleRepository vehicleRepository)
         {
             _driverRepository = driverRepository;
+            _vehicleRepository = vehicleRepository;
         }
 
         // GET /api/drivers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Driver>>> GetDrivers()
+        public async Task<ActionResult<IEnumerable<DriverDTO>>> GetDrivers()
         {
             var drivers = await _driverRepository.GetDriversAsync();
-            return Ok(drivers);
+
+            // Map Driver to DriverDTO
+            var driverDTOs = drivers.Select(driver => new DriverDTO
+            {
+                DriverId = driver.DriverId,
+                Name = driver.Name,
+                LicenseNumber = driver.LicenseNumber,
+                VehicleId = driver.Vehicles.FirstOrDefault()?.VehicleId ?? 0 // Assuming a driver can have multiple vehicles
+            }).ToList();
+
+            return Ok(driverDTOs);
         }
 
         // GET /api/drivers/{id}
@@ -39,19 +54,38 @@ namespace VehicleService.Controllers
             return Ok(driver);
         }
 
-        // POST /api/drivers (Admin Only)
+        // POST /api/driver
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult> CreateDriver([FromBody] Driver driver)
+        public async Task<ActionResult> CreateDriver([FromBody] DriverDTO driverDTO)
         {
-            if (!ModelState.IsValid)
+            var driver = new Driver
             {
-                return BadRequest(ModelState);
+                Name = driverDTO.Name,
+                LicenseNumber = driverDTO.LicenseNumber,
+                Vehicles = new List<Vehicle>()
+            };
+
+            // Check if a vehicleId is provided and valid
+            if (driverDTO.VehicleId.HasValue)
+            {
+                var vehicle = await _vehicleRepository.GetVehicleByIdAsync(driverDTO.VehicleId.Value);
+                if (vehicle != null)
+                {
+                    driver.Vehicles.Add(vehicle);
+                }
+                else
+                {
+                    return BadRequest($"Vehicle with ID {driverDTO.VehicleId.Value} not found.");
+                }
             }
 
             await _driverRepository.AddDriverAsync(driver);
-            return CreatedAtAction(nameof(GetDriver), new { id = driver.DriverId }, driver);
+
+            return CreatedAtAction(nameof(CreateDriver), new { id = driver.DriverId }, driverDTO);
         }
+
+
 
         // PUT /api/drivers/{id} (Admin Only)
         [Authorize(Roles = "Admin")]

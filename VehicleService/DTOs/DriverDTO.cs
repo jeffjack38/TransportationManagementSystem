@@ -13,6 +13,7 @@ namespace VehicleService.DTOs
         [Required(ErrorMessage = "License Number is required.")]
         [StringLength(15, ErrorMessage = "License Number cannot exceed 15 characters.")]
         public string LicenseNumber { get; set; }
+        public int? VehicleId { get; set; }
     }
 }
 

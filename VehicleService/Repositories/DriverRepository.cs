@@ -15,7 +15,10 @@ public class DriverRepository : IDriverRepository
     // Retrieve all drivers
     public async Task<IEnumerable<Driver>> GetDriversAsync()
     {
-        return await _context.Drivers.AsNoTracking().ToListAsync();
+        return await _context.Drivers
+                             .Include(d => d.Vehicles) // include vehicles
+                             .AsNoTracking()
+                             .ToListAsync();
     }
 
     // Retrieve drivers by user ID
@@ -26,7 +29,7 @@ public class DriverRepository : IDriverRepository
             .ToListAsync();
     }
 
-    // Retrieve driver by Driver ID (this was missing)
+    // Retrieve driver by Driver ID 
     public async Task<Driver> GetDriversByIdAsync(int driverId)
     {
         return await _context.Drivers

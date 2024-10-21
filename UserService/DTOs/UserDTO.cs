@@ -23,6 +23,7 @@ namespace UserService.DTOs
         public bool IsActive { get; set; }
 
         public DateTime? LastLoginDate { get; set; }
+        public string Role { get; set; }
     }
 
 
