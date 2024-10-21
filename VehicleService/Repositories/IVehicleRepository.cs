@@ -1,4 +1,4 @@
-﻿using VehicleService.Models;
+﻿using SharedModels.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

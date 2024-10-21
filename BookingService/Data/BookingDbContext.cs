@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using BookingService.Models;
-
+using SharedModels.Models;
 namespace BookingService.Data
 {
     public class BookingDbContext : DbContext

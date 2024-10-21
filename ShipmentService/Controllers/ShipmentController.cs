@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShipmentService.DTOs;
-using ShipmentService.Models;
+using SharedModels.Models;
 using ShipmentService.Repositories;
 using System.Collections.Generic;
 using System.Linq;
@@ -109,6 +109,23 @@ namespace ShipmentService.Controllers
             await _shipmentRepository.UpdateShipmentAsync(shipment);
             return Ok("Shipment updated successfully.");
         }
+
+        // DELETE /api/shipments/{id}
+        [Authorize(Roles = "Admin")]  // Only Admin can delete shipments
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteShipment(int id)
+        {
+            var shipment = await _shipmentRepository.GetShipmentByIdAsync(id);
+
+            if (shipment == null)
+            {
+                return NotFound("Shipment not found.");
+            }
+
+            await _shipmentRepository.DeleteShipmentAsync(id);
+            return Ok("Shipment deleted successfully.");
+        }
+
     }
 }
 

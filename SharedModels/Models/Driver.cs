@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
-namespace VehicleService.Models
+namespace SharedModels.Models
 {
     public class Driver
     {
@@ -13,6 +14,8 @@ namespace VehicleService.Models
         [Required]  // Will create a NOT NULL column in the database
         [StringLength(15)]  // The maximum length of the 'LicenseNumber' field
         public string LicenseNumber { get; set; }
+        //Link to an application User if the driver has a user account
+        public string? UserId { get; set; }
 
         public ICollection<Vehicle> Vehicles { get; set; }  // A driver can have multiple vehicles
     }

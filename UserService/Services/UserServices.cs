@@ -7,8 +7,9 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using UserService.DTOs;
-using UserService.Models;
+using SharedModels.Models;
 using UserService.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace UserService.Services
 {
@@ -55,13 +56,14 @@ namespace UserService.Services
 
             if (result.Succeeded)
             {
-                // Optionally assign a role (if roles exist)
-                if (!await _roleManager.RoleExistsAsync("User"))
+                // Be sure role exists before adding it to the user
+                if (!await _roleManager.RoleExistsAsync(model.Role))
                 {
-                    await _roleManager.CreateAsync(new IdentityRole("User"));
+                    return IdentityResult.Failed(new IdentityError { Description = $"Role '{model.Role}' does not exist." });
                 }
 
-                await _userManager.AddToRoleAsync(user, "User");
+                // Assign the user to the specified role
+                await _userManager.AddToRoleAsync(user, model.Role);
             }
 
             return result;
@@ -86,6 +88,23 @@ namespace UserService.Services
         {
             return await _userManager.FindByIdAsync(userId);
         }
+
+        // Retrieve all users
+        public async Task<IEnumerable<UserDTO>> GetAllUsersAsync()
+        {
+            return await _userManager.Users
+                .Select(user => new UserDTO
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    IsActive = user.IsActive,
+                    LastLoginDate = user.LastLoginDate
+                })
+                .ToListAsync();
+        }
+
 
         // 4. Reset the user's password
         public async Task<IdentityResult> ResetPasswordAsync(ResetPasswordViewModel model)

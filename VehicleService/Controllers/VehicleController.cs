@@ -2,7 +2,7 @@
 using VehicleService.DTOs;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using VehicleService.Models;
+using SharedModels.Models;
 using VehicleService.Repositories;
 using Microsoft.AspNetCore.Authorization;
 
@@ -106,7 +106,7 @@ namespace VehicleService.Controllers
             };
 
             await _vehicleRepository.UpdateVehicleAsync(vehicle);
-            return Ok(new { message = "Vehicle updated successfully!", vehicle });
+            return Ok(new { message = "Vehicle updated successfully!", vehicleDTO });
         }
 
         // PUT /api/vehicles/{id}/assign

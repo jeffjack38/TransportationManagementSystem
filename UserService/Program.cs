@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using SharedModels.Models;
 using UserService.Data;
-using UserService.Models;
 using UserService.Services;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection.Emit;
-using VehicleService.Models;
-
 using Microsoft.EntityFrameworkCore;
-using VehicleService.Models;
+using SharedModels.Models;
 
 namespace VehicleService.Data
 {

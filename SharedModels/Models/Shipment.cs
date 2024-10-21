@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace ShipmentService.Models
+namespace SharedModels.Models
 {
     public class Shipment
     {

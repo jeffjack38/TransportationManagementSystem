@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Configuration;
-using BookingService.Models;
+using SharedModels.Models;
 using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -21,8 +21,8 @@ namespace BookingService.Repositories
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var query = "INSERT INTO Bookings (ShipmentId, CustomerName, BookingDate, Status) " +
-                            "VALUES (@ShipmentId, @CustomerName, @BookingDate, @Status)";
+                var query = "INSERT INTO Bookings (ShipmentId, CustomerName, BookingDate, Status, UserId) " +
+                            "VALUES (@ShipmentId, @CustomerName, @BookingDate, @Status, @UserId)";
                 await connection.ExecuteAsync(query, booking);
             }
         }
@@ -62,31 +62,38 @@ namespace BookingService.Repositories
             }
         }
 
-        public async Task<IEnumerable<BookingShipmentDTO>> GetBookingsWithShipmentsAsync(int page, int pageSize)
-        {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                var query = @"
-            SELECT b.BookingId, b.CustomerName, b.BookingDate, b.Status, s.ShipmentId, s.Origin, s.Destination, s.ShipDate, s.Status AS ShipmentStatus
-            FROM Bookings b
-            JOIN Shipments s ON b.ShipmentId = s.ShipmentId
-            ORDER BY b.BookingDate
-            OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
-
-                return await connection.QueryAsync<BookingShipmentDTO>(query, new { Offset = (page - 1) * pageSize, PageSize = pageSize });
-            }
-        }
-
         public async Task UpdateBookingAsync(Booking booking)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var query = "UPDATE Bookings SET ShipmentId = @ShipmentId, CustomerName = @CustomerName, " +
-                            "BookingDate = @BookingDate, Status = @Status WHERE BookingId = @BookingId";
+                var query = @"
+            UPDATE Bookings
+            SET ShipmentId = @ShipmentId,
+                CustomerName = @CustomerName,
+                BookingDate = @BookingDate,
+                Status = @Status,
+                UserId = @UserId
+            WHERE BookingId = @BookingId";  
 
-                await connection.ExecuteAsync(query, booking);
+                await connection.ExecuteAsync(query, new
+                {
+                    ShipmentId = booking.ShipmentId,
+                    CustomerName = booking.CustomerName,
+                    BookingDate = booking.BookingDate,
+                    Status = booking.Status,
+                    UserId = booking.UserId,
+                    BookingId = booking.BookingId  
+                });
+            }
+        }
+
+        public async Task DeleteBookingAsync(int bookingId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var query = "DELETE FROM Bookings WHERE BookingId = @BookingId";
+                await connection.ExecuteAsync(query, new { BookingId = bookingId });
             }
         }
     }
 }
-

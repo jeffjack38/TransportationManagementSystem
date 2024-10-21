@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using BookingService.DTOs;
-using BookingService.Models;
+using SharedModels.Models;
 using BookingService.Repositories;
+using System.Linq;
 using System.Threading.Tasks;
 using BookingService.Services;
 
@@ -21,7 +22,6 @@ namespace BookingService.Controllers
             _bookingServices = bookingServices;
         }
 
-
         // GET /api/Booking?page=1&pageSize=10
         [HttpGet]
         public async Task<IActionResult> GetBookings([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
@@ -32,10 +32,11 @@ namespace BookingService.Controllers
                 ShipmentId = b.ShipmentId,
                 CustomerName = b.CustomerName,
                 BookingDate = b.BookingDate,
-                Status = b.Status
+                Status = b.Status,
+                UserId = b.UserId
             });
 
-            return Ok(new { Data = bookingDTOs, TotalCount = totalCount });
+            return Ok(new { Data = bookingDTOs, TotalCount = totalCount, CurrentPage = page, PageSize = pageSize });
         }
 
         // POST /api/Booking
@@ -43,13 +44,12 @@ namespace BookingService.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateBooking([FromBody] BookingDTO bookingDTO)
         {
-            // Validate the incoming model
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            // Use BookingServices to create a booking after checking shipment availability
+            // Validate shipment availability through BookingServices
             var result = await _bookingServices.CreateBookingAsync(bookingDTO);
 
             if (!result)
@@ -57,22 +57,19 @@ namespace BookingService.Controllers
                 return BadRequest("Shipment not found or unavailable.");
             }
 
-            // Create the booking entity to be stored in the database
             var booking = new Booking
             {
                 ShipmentId = bookingDTO.ShipmentId,
                 CustomerName = bookingDTO.CustomerName,
                 BookingDate = bookingDTO.BookingDate,
-                Status = bookingDTO.Status
+                Status = bookingDTO.Status,
+                UserId = bookingDTO.UserId // Ensure the UserId is saved
             };
 
-            // Add booking to the repository
             await _bookingRepository.AddBookingAsync(booking);
 
-            // Return success and the created booking's details
             return CreatedAtAction(nameof(GetBookingById), new { id = booking.BookingId }, bookingDTO);
         }
-
 
         // GET /api/Bookings/{id}
         [HttpGet("{id}")]
@@ -112,18 +109,32 @@ namespace BookingService.Controllers
                 return NotFound("Booking not found.");
             }
 
-            // Update the booking details
             existingBooking.ShipmentId = bookingDTO.ShipmentId;
             existingBooking.CustomerName = bookingDTO.CustomerName;
             existingBooking.BookingDate = bookingDTO.BookingDate;
             existingBooking.Status = bookingDTO.Status;
+            existingBooking.UserId = bookingDTO.UserId;  // Ensure UserId is updated
 
             await _bookingRepository.UpdateBookingAsync(existingBooking);
 
             return Ok("Booking updated successfully.");
         }
 
+        // DELETE /api/Booking/{id}
+        [Authorize(Roles = "Admin")]  // Restrict this to Admin only
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBooking(int id)
+        {
+            var booking = await _bookingRepository.GetBookingByIdAsync(id);
+            if (booking == null)
+            {
+                return NotFound("Booking not found.");
+            }
 
+            await _bookingRepository.DeleteBookingAsync(id);
+
+            return Ok("Booking deleted successfully.");
+        }
 
     }
 }

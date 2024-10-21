@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ShipmentService.Models;
 using System.Collections.Generic;
 using System.Reflection.Emit;
+using SharedModels.Models;
 
 namespace ShipmentService.Data
 {

@@ -1,4 +1,4 @@
-﻿namespace UserService.Models
+﻿namespace SharedModels.Models
 {
     using Microsoft.AspNetCore.Identity;
     using System.ComponentModel.DataAnnotations;
@@ -30,6 +30,7 @@
         public DateTime? LastLoginDate { get; set; }
 
         public DateTime LastProfileUpdate { get; set; }
+
     }
 
 }

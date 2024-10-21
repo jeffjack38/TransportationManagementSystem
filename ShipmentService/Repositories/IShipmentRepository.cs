@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using ShipmentService.Models;
+using SharedModels.Models;
 
 namespace ShipmentService.Repositories
 {
@@ -12,7 +12,7 @@ namespace ShipmentService.Repositories
         Task<IEnumerable<Shipment>> GetShipmentsAsync();   // Retrieve all shipments
         Task<IEnumerable<Shipment>> GetShipmentsPaginatedAsync(int page, int pageSize);  // method for pagination
         Task<int> GetTotalShipmentsCountAsync();  // New method to get total count of shipments
-
+        Task DeleteShipmentAsync(int shipmentId);
 
 
     }

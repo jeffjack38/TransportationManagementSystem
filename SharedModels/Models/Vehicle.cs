@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace VehicleService.Models
+namespace SharedModels.Models
 {
     public class Vehicle
     {

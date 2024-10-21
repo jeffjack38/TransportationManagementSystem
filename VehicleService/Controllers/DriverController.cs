@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using VehicleService.Models;
+using SharedModels.Models;
 using VehicleService.Repositories;
 
 namespace VehicleService.Controllers
@@ -30,7 +30,7 @@ namespace VehicleService.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Driver>> GetDriver(int id)
         {
-            var driver = await _driverRepository.GetDriverByIdAsync(id);
+            var driver = await _driverRepository.GetDriversByIdAsync(id); // Consistent method name
             if (driver == null)
             {
                 return NotFound();
@@ -63,7 +63,7 @@ namespace VehicleService.Controllers
                 return BadRequest(ModelState);
             }
 
-            var existingDriver = await _driverRepository.GetDriverByIdAsync(id);
+            var existingDriver = await _driverRepository.GetDriversByIdAsync(id);
             if (existingDriver == null)
             {
                 return NotFound();
@@ -78,7 +78,7 @@ namespace VehicleService.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDriver(int id)
         {
-            var driver = await _driverRepository.GetDriverByIdAsync(id);
+            var driver = await _driverRepository.GetDriversByIdAsync(id);
             if (driver == null)
             {
                 return NotFound();

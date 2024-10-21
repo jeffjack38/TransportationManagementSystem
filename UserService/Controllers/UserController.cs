@@ -39,7 +39,8 @@ namespace UserService.Controllers
             return Ok("Profile updated successfully.");
         }
 
-        // 2. Register a new user
+        // 2. Register a new user, ADMIN only
+        [Authorize(Roles = "Admin")]  // Only Admin can create users
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
         {
@@ -124,6 +125,20 @@ namespace UserService.Controllers
             }
 
             return Ok("User deleted successfully.");
+        }
+
+        // 7. Get All Users
+        [Authorize(Roles = "Admin")]  // Only Admin can access this endpoint
+        [HttpGet("all-users")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _userService.GetAllUsersAsync();
+            if (users == null || !users.Any())
+            {
+                return NotFound("No users found.");
+            }
+
+            return Ok(users);
         }
     }
 }

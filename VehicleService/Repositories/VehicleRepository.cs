@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using VehicleService.Data;
-using VehicleService.Models;
+using SharedModels.Models;
 using VehicleService.Repositories;
 
 public class VehicleRepository : IVehicleRepository

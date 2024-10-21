@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace BookingService.Models
+namespace SharedModels.Models
 {
     public class Booking
     {
@@ -21,6 +21,10 @@ namespace BookingService.Models
         [Required]  // Status is required
         [StringLength(50)]  // Limits the Status to 50 characters
         public string Status { get; set; }
+
+        // Associate this booking with a user (customer)
+        public string? UserId { get; set; }
+
     }
 }
 

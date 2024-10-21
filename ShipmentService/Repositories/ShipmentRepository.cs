@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Configuration;
-using ShipmentService.Models;
+using SharedModels.Models;
 using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -86,6 +86,16 @@ namespace ShipmentService.Repositories
             {
                 var query = "SELECT * FROM Shipments";
                 return await connection.QueryAsync<Shipment>(query);
+            }
+        }
+
+
+        public async Task DeleteShipmentAsync(int shipmentId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var query = "DELETE FROM Shipments WHERE ShipmentId = @ShipmentId";
+                await connection.ExecuteAsync(query, new { ShipmentId = shipmentId });
             }
         }
     }
