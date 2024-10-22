@@ -19,7 +19,7 @@ namespace VehicleService.Controllers
             _vehicleRepository = vehicleRepository;
         }
 
-        // GET /api/vehicles
+        // GET /api/vehicle
         [HttpGet]
         public async Task<ActionResult<IEnumerable<VehicleDTO>>> GetVehicles([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
@@ -34,13 +34,13 @@ namespace VehicleService.Controllers
                 DriverId = v.DriverId
             });
 
-            //  return pagination metadata, total count of vehicles
+            
             var totalCount = await _vehicleRepository.GetTotalVehiclesCountAsync();
 
             return Ok(new { totalCount, vehicleDTOs });
         }
 
-        // GET /api/vehicles/{id}
+        // GET /api/vehicle/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<VehicleDTO>> GetVehicle(int id)
         {
@@ -63,7 +63,7 @@ namespace VehicleService.Controllers
             return Ok(vehicleDTO);
         }
 
-        // POST /api/vehicles
+        // POST /api/vehicle
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult> CreateVehicle([FromBody] VehicleDTO vehicleDTO)
@@ -80,7 +80,7 @@ namespace VehicleService.Controllers
             return CreatedAtAction(nameof(GetVehicle), new { id = vehicle.VehicleId }, vehicleDTO);
         }
 
-        // PUT /api/vehicles/{id}
+        // PUT /api/vehicle/{id}
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateVehicle(int id, [FromBody] VehicleDTO vehicleDTO)
@@ -109,7 +109,7 @@ namespace VehicleService.Controllers
             return Ok(new { message = "Vehicle updated successfully!", vehicleDTO });
         }
 
-        // PUT /api/vehicles/{id}/assign
+        // PUT /api/vehicle/{id}/assign
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}/assign")]
         public async Task<IActionResult> AssignDriver(int id, [FromBody] int driverId)

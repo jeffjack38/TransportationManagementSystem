@@ -12,16 +12,16 @@ public class DriverRepository : IDriverRepository
         _context = context;
     }
 
-    // Retrieve all drivers
+    
     public async Task<IEnumerable<Driver>> GetDriversAsync()
     {
         return await _context.Drivers
-                             .Include(d => d.Vehicles) // include vehicles
+                             .Include(d => d.Vehicles)
                              .AsNoTracking()
                              .ToListAsync();
     }
 
-    // Retrieve drivers by user ID
+    
     public async Task<IEnumerable<Driver>> GetDriversByUserIdAsync(string userId)
     {
         return await _context.Drivers
@@ -29,22 +29,22 @@ public class DriverRepository : IDriverRepository
             .ToListAsync();
     }
 
-    // Retrieve driver by Driver ID 
+    
     public async Task<Driver> GetDriversByIdAsync(int driverId)
     {
         return await _context.Drivers
-            .Include(d => d.Vehicles)  // Include related vehicles if needed
+            .Include(d => d.Vehicles)  
             .FirstOrDefaultAsync(d => d.DriverId == driverId);
     }
 
-    // Add a new driver
+    
     public async Task AddDriverAsync(Driver driver)
     {
         _context.Drivers.Add(driver);
         await _context.SaveChangesAsync();
     }
 
-    // Update an existing driver
+    
     public async Task UpdateDriverAsync(Driver driver)
     {
         var existingDriver = await _context.Drivers
@@ -64,7 +64,7 @@ public class DriverRepository : IDriverRepository
         await _context.SaveChangesAsync();
     }
 
-    // Delete a driver and remove associations with vehicles
+    
     public async Task DeleteDriverAsync(int driverId)
     {
         var driver = await _context.Drivers.Include(d => d.Vehicles).FirstOrDefaultAsync(d => d.DriverId == driverId);

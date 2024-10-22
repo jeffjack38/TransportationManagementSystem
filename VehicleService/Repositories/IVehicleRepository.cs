@@ -11,8 +11,8 @@ namespace VehicleService.Repositories
         Task AddVehicleAsync(Vehicle vehicle);
         Task UpdateVehicleAsync(Vehicle vehicle);
         Task AssignDriverToVehicleAsync(int vehicleId, int driverId);
-        Task<int> GetTotalVehiclesCountAsync();  // method to get total count of vehicles
-        Task<IEnumerable<Vehicle>> GetVehiclesPaginatedAsync(int page, int pageSize);  // method to get vehicles paginated
+        Task<int> GetTotalVehiclesCountAsync();  
+        Task<IEnumerable<Vehicle>> GetVehiclesPaginatedAsync(int page, int pageSize);  
     }
 }
 

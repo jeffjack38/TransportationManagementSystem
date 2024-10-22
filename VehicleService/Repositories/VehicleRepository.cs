@@ -49,10 +49,10 @@ public class VehicleRepository : IVehicleRepository
 
         if (existingVehicle != null)
         {
-            _context.Entry(existingVehicle).State = EntityState.Detached;  // Detach the tracked entity
+            _context.Entry(existingVehicle).State = EntityState.Detached;  
         }
 
-        _context.Vehicles.Update(vehicle);  // Attach and update the incoming entity
+        _context.Vehicles.Update(vehicle);  
         await _context.SaveChangesAsync();
     }
 

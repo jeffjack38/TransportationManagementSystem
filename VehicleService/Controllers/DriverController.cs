@@ -23,29 +23,29 @@ namespace VehicleService.Controllers
             _vehicleRepository = vehicleRepository;
         }
 
-        // GET /api/drivers
+        // GET /api/driver
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DriverDTO>>> GetDrivers()
         {
             var drivers = await _driverRepository.GetDriversAsync();
 
-            // Map Driver to DriverDTO
+            
             var driverDTOs = drivers.Select(driver => new DriverDTO
             {
                 DriverId = driver.DriverId,
                 Name = driver.Name,
                 LicenseNumber = driver.LicenseNumber,
-                VehicleId = driver.Vehicles.FirstOrDefault()?.VehicleId ?? 0 // Assuming a driver can have multiple vehicles
+                VehicleId = driver.Vehicles.FirstOrDefault()?.VehicleId ?? 0 
             }).ToList();
 
             return Ok(driverDTOs);
         }
 
-        // GET /api/drivers/{id}
+        // GET /api/driver/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Driver>> GetDriver(int id)
         {
-            var driver = await _driverRepository.GetDriversByIdAsync(id); // Consistent method name
+            var driver = await _driverRepository.GetDriversByIdAsync(id); 
             if (driver == null)
             {
                 return NotFound();
@@ -66,7 +66,7 @@ namespace VehicleService.Controllers
                 Vehicles = new List<Vehicle>()
             };
 
-            // Check if a vehicleId is provided and valid
+            
             if (driverDTO.VehicleId.HasValue)
             {
                 var vehicle = await _vehicleRepository.GetVehicleByIdAsync(driverDTO.VehicleId.Value);
@@ -87,7 +87,7 @@ namespace VehicleService.Controllers
 
 
 
-        // PUT /api/drivers/{id} (Admin Only)
+        // PUT /api/driver/{id} 
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateDriver(int id, [FromBody] DriverDTO driverDTO)
@@ -97,13 +97,13 @@ namespace VehicleService.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Custom validation or processing logic here
+            
             if (driverDTO.Vehicles != null && driverDTO.Vehicles.Count == 0)
             {
                 return BadRequest("At least one vehicle must be provided.");
             }
 
-            // Proceed with updating driver
+            
             var driver = await _driverRepository.GetDriversByIdAsync(id);
             if (driver == null)
             {
@@ -113,10 +113,10 @@ namespace VehicleService.Controllers
             driver.Name = driverDTO.Name;
             driver.LicenseNumber = driverDTO.LicenseNumber;
 
-            // If Vehicles are provided, update them
+            
             if (driverDTO.Vehicles != null)
             {
-                // Update logic for vehicles
+               
             }
 
             await _driverRepository.UpdateDriverAsync(driver);
@@ -124,7 +124,7 @@ namespace VehicleService.Controllers
         }
 
 
-        // DELETE /api/drivers/{id} (Admin Only)
+        // DELETE /api/driver/{id} 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDriver(int id)
