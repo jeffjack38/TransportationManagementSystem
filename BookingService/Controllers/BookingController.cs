@@ -29,6 +29,7 @@ namespace BookingService.Controllers
             var (bookings, totalCount) = await _bookingRepository.GetBookingsWithCountAsync(page, pageSize);
             var bookingDTOs = bookings.Select(b => new BookingDTO
             {
+                BookingId = b.BookingId,
                 ShipmentId = b.ShipmentId,
                 CustomerName = b.CustomerName,
                 BookingDate = b.BookingDate,
@@ -71,7 +72,7 @@ namespace BookingService.Controllers
             return CreatedAtAction(nameof(GetBookingById), new { id = booking.BookingId }, bookingDTO);
         }
 
-        // GET /api/Bookings/{id}
+        // GET /api/Booking/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<BookingDTO>> GetBookingById(int id)
         {
@@ -121,7 +122,7 @@ namespace BookingService.Controllers
         }
 
         // DELETE /api/Booking/{id}
-        [Authorize(Roles = "Admin")]  // Restrict this to Admin only
+        [Authorize(Roles = "Admin")]  
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBooking(int id)
         {

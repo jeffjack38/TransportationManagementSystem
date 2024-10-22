@@ -10,7 +10,6 @@ namespace BookingService.Services
         private readonly IBookingRepository _bookingRepository;  // Inject BookingRepository
         private readonly string _shipmentServiceUrl;
 
-
         public BookingServices(IHttpClientFactory httpClientFactory, IBookingRepository bookingRepository, IConfiguration configuration)
         {
             _httpClientFactory = httpClientFactory;
@@ -18,7 +17,6 @@ namespace BookingService.Services
             _shipmentServiceUrl = configuration["ShipmentServiceUrl"];
         }
 
-        // Check if shipment is available
         public async Task<bool> IsShipmentAvailableAsync(int shipmentId)
         {
             var client = _httpClientFactory.CreateClient();
@@ -26,9 +24,8 @@ namespace BookingService.Services
 
             if (response.IsSuccessStatusCode)
             {
-                // Use ShipmentDTO to deserialize the response
                 var shipment = await response.Content.ReadFromJsonAsync<ShipmentDTO>();
-                return shipment.Status == "Available";
+                return shipment != null && shipment.Status == "Available";
             }
 
             Console.WriteLine($"Failed to retrieve shipment. StatusCode: {response.StatusCode}");
@@ -38,24 +35,27 @@ namespace BookingService.Services
         // Create a booking if shipment is available
         public async Task<bool> CreateBookingAsync(BookingDTO bookingDTO)
         {
+            Console.WriteLine($"Attempting to create booking for ShipmentId: {bookingDTO.ShipmentId}");
+
+            // Check if the shipment exists and is available
             bool isShipmentAvailable = await IsShipmentAvailableAsync(bookingDTO.ShipmentId);
 
             if (!isShipmentAvailable)
             {
+                Console.WriteLine("Shipment not available or does not exist.");
                 return false;
             }
 
-            // Use repository to add booking to the database
             await _bookingRepository.AddBookingAsync(new Booking
             {
                 ShipmentId = bookingDTO.ShipmentId,
                 CustomerName = bookingDTO.CustomerName,
                 BookingDate = bookingDTO.BookingDate,
-                Status = bookingDTO.Status
+                Status = bookingDTO.Status,
+                UserId = bookingDTO.UserId
             });
 
             return true;
         }
     }
-
 }

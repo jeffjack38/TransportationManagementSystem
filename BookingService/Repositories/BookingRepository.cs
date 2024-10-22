@@ -2,9 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using SharedModels.Models;
 using Microsoft.Data.SqlClient;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using BookingService.DTOs;
 
 namespace BookingService.Repositories
 {
@@ -21,8 +19,8 @@ namespace BookingService.Repositories
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var query = "INSERT INTO Bookings (ShipmentId, CustomerName, BookingDate, Status, UserId) " +
-                            "VALUES (@ShipmentId, @CustomerName, @BookingDate, @Status, @UserId)";
+                var query = @"INSERT INTO Bookings (ShipmentId, CustomerName, BookingDate, Status, UserId)
+                              VALUES (@ShipmentId, @CustomerName, @BookingDate, @Status, @UserId)";
                 await connection.ExecuteAsync(query, booking);
             }
         }
@@ -40,8 +38,7 @@ namespace BookingService.Repositories
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var query = "SELECT * FROM Bookings ORDER BY BookingDate " +
-                            "OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
+                var query = "SELECT * FROM Bookings ORDER BY BookingDate OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
                 return await connection.QueryAsync<Booking>(query, new { Offset = (page - 1) * pageSize, PageSize = pageSize });
             }
         }
@@ -50,9 +47,7 @@ namespace BookingService.Repositories
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                var query = "SELECT * FROM Bookings ORDER BY BookingDate " +
-                            "OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
-
+                var query = "SELECT * FROM Bookings ORDER BY BookingDate OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
                 var countQuery = "SELECT COUNT(*) FROM Bookings";
 
                 var bookings = await connection.QueryAsync<Booking>(query, new { Offset = (page - 1) * pageSize, PageSize = pageSize });
@@ -67,23 +62,15 @@ namespace BookingService.Repositories
             using (var connection = new SqlConnection(_connectionString))
             {
                 var query = @"
-            UPDATE Bookings
-            SET ShipmentId = @ShipmentId,
-                CustomerName = @CustomerName,
-                BookingDate = @BookingDate,
-                Status = @Status,
-                UserId = @UserId
-            WHERE BookingId = @BookingId";  
+                    UPDATE Bookings
+                    SET ShipmentId = @ShipmentId,
+                        CustomerName = @CustomerName,
+                        BookingDate = @BookingDate,
+                        Status = @Status,
+                        UserId = @UserId
+                    WHERE BookingId = @BookingId";
 
-                await connection.ExecuteAsync(query, new
-                {
-                    ShipmentId = booking.ShipmentId,
-                    CustomerName = booking.CustomerName,
-                    BookingDate = booking.BookingDate,
-                    Status = booking.Status,
-                    UserId = booking.UserId,
-                    BookingId = booking.BookingId  
-                });
+                await connection.ExecuteAsync(query, booking);
             }
         }
 

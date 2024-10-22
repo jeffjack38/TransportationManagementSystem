@@ -5,6 +5,7 @@ namespace SharedModels.Models
 {
     public class Shipment
     {
+        [Key]  // Primary Key
         public int ShipmentId { get; set; }  // Primary Key
 
         [Required]
@@ -21,6 +22,9 @@ namespace SharedModels.Models
         [Required]
         [StringLength(20)]  // Database constraint
         public string Status { get; set; }  // Status of the shipment, e.g., Pending, Shipped, Delivered
+
+        // Navigation property for bookings associated with this shipment
+        public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
     }
 }
 

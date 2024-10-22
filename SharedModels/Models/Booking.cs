@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SharedModels.Models
 {
@@ -10,6 +11,9 @@ namespace SharedModels.Models
 
         [Required]  // ShipmentId is required
         public int ShipmentId { get; set; }
+
+        [ForeignKey("ShipmentId")]  // ForeignKey attribute for Shipment
+        public Shipment Shipment { get; set; }  // Navigation property for Shipment
 
         [Required]  // CustomerName is required
         [StringLength(100)]  // Limits the CustomerName to 100 characters

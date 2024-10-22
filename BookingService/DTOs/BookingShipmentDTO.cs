@@ -19,7 +19,6 @@ namespace BookingService.DTOs
         [StringLength(50, ErrorMessage = "Status cannot exceed 50 characters.")]
         public string Status { get; set; }
 
-        // Shipment information
         [Required(ErrorMessage = "ShipmentId is required.")]
         public int ShipmentId { get; set; }
 
