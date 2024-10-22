@@ -5,25 +5,24 @@ namespace SharedModels.Models
 {
     public class Shipment
     {
-        [Key]  // Primary Key
-        public int ShipmentId { get; set; }  // Primary Key
+        [Key]  
+        public int ShipmentId { get; set; } 
 
         [Required]
-        [StringLength(100)]  // Database constraint
-        public string Origin { get; set; }  // The place the shipment is coming from
+        [StringLength(100)]  
+        public string Origin { get; set; }  
 
         [Required]
-        [StringLength(100)]  // Database constraint
-        public string Destination { get; set; }  // The place the shipment is going to
+        [StringLength(100)]  
+        public string Destination { get; set; }  
 
         [Required]
-        public DateTime ShipDate { get; set; }  // Date when the shipment is scheduled
+        public DateTime ShipDate { get; set; }  
 
         [Required]
-        [StringLength(20)]  // Database constraint
-        public string Status { get; set; }  // Status of the shipment, e.g., Pending, Shipped, Delivered
+        [StringLength(20)]  
+        public string Status { get; set; }  
 
-        // Navigation property for bookings associated with this shipment
         public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
     }
 }

@@ -6,27 +6,26 @@ namespace SharedModels.Models
 {
     public class Booking
     {
-        [Key]  // Marks this as the primary key
+        [Key]  
         public int BookingId { get; set; }
 
-        [Required]  // ShipmentId is required
+        [Required]  
         public int ShipmentId { get; set; }
 
-        [ForeignKey("ShipmentId")]  // ForeignKey attribute for Shipment
-        public Shipment Shipment { get; set; }  // Navigation property for Shipment
+        [ForeignKey("ShipmentId")]  
+        public Shipment Shipment { get; set; }  
 
-        [Required]  // CustomerName is required
-        [StringLength(100)]  // Limits the CustomerName to 100 characters
+        [Required]  
+        [StringLength(100)] 
         public string CustomerName { get; set; }
 
-        [Required]  // BookingDate is required
+        [Required] 
         public DateTime BookingDate { get; set; }
 
-        [Required]  // Status is required
-        [StringLength(50)]  // Limits the Status to 50 characters
+        [Required] 
+        [StringLength(50)]  
         public string Status { get; set; }
 
-        // Associate this booking with a user (customer)
         public string? UserId { get; set; }
 
     }

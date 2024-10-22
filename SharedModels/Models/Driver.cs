@@ -7,17 +7,17 @@ namespace SharedModels.Models
     {
         public int DriverId { get; set; }
 
-        [Required]  // Will create a NOT NULL column in the database
-        [StringLength(100)]  // The maximum length of the 'Name' field
+        [Required]  
+        [StringLength(100)]  
         public string Name { get; set; }
 
-        [Required]  // Will create a NOT NULL column in the database
-        [StringLength(15)]  // The maximum length of the 'LicenseNumber' field
+        [Required]  
+        [StringLength(15)]  
         public string LicenseNumber { get; set; }
-        //Link to an application User if the driver has a user account
+    
         public string? UserId { get; set; }
 
-        public ICollection<Vehicle> Vehicles { get; set; }  // A driver can have multiple vehicles
+        public ICollection<Vehicle> Vehicles { get; set; }  
     }
 }
 
