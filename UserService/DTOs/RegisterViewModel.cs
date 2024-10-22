@@ -45,7 +45,7 @@ namespace UserService.DTOs
         [Phone(ErrorMessage = "Invalid phone number format.")]
         public string PhoneNumber { get; set; }
 
-        // Role field
+        
         [Required(ErrorMessage = "Role is required.")]
         public string Role { get; set; }  // Role for the user (Admin, Driver, Dispatcher, Customer)
     }

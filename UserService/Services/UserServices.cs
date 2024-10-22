@@ -37,7 +37,7 @@ namespace UserService.Services
             _configuration = configuration;
         }
 
-        // 1. Register a new user
+        
         public async Task<IdentityResult> RegisterUserAsync(RegisterViewModel model)
         {
             var user = new User
@@ -57,20 +57,20 @@ namespace UserService.Services
 
             if (result.Succeeded)
             {
-                // Be sure role exists before adding it to the user
+               
                 if (!await _roleManager.RoleExistsAsync(model.Role))
                 {
                     return IdentityResult.Failed(new IdentityError { Description = $"Role '{model.Role}' does not exist." });
                 }
 
-                // Assign the user to the specified role
+                
                 await _userManager.AddToRoleAsync(user, model.Role);
             }
 
             return result;
         }
 
-        // 2. Log in the user and return a JWT token
+        
         public async Task<string> LoginUserAsync(LoginViewModel model)
 {
     var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: false, lockoutOnFailure: false);
@@ -81,16 +81,16 @@ namespace UserService.Services
     }
 
     var user = await _userManager.FindByEmailAsync(model.Email);
-    return await GenerateJwtToken(user);  // Await the token generation
+    return await GenerateJwtToken(user);  
 }
 
-        // 3. Retrieve the user's information by ID
+        
         public async Task<User> GetUserByIdAsync(string userId)
         {
             return await _userManager.FindByIdAsync(userId);
         }
 
-        // Retrieve all users
+        
         public async Task<IEnumerable<UserDTO>> GetAllUsersWithRolesAsync()
         {
             var users = _userManager.Users.ToList();
@@ -98,7 +98,7 @@ namespace UserService.Services
 
             foreach (var user in users)
             {
-                // Get the roles for each user
+                
                 var roles = await _userManager.GetRolesAsync(user);
 
                 var userDTO = new UserDTO
@@ -109,7 +109,7 @@ namespace UserService.Services
                     LastName = user.LastName,
                     IsActive = user.IsActive,
                     LastLoginDate = user.LastLoginDate,
-                    Role = roles.FirstOrDefault() // Assign the first role, assuming one role per user
+                    Role = roles.FirstOrDefault()
                 };
 
                 userDTOs.Add(userDTO);
@@ -119,7 +119,7 @@ namespace UserService.Services
         }
 
 
-        // 4. Reset the user's password
+        
         public async Task<IdentityResult> ResetPasswordAsync(ResetPasswordViewModel model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
@@ -135,7 +135,7 @@ namespace UserService.Services
             return result;
         }
 
-        // 5. Delete a user account
+        
         public async Task<IdentityResult> DeleteUserAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -148,16 +148,16 @@ namespace UserService.Services
             return await _userManager.DeleteAsync(user);
         }
 
-        // Update the user's profile information
+        
         public async Task<bool> UpdateUserProfileAsync(string userId, UpdateProfileViewModel model)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return false; // User not found
+                return false; 
             }
 
-            // Update the user's profile details
+            
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
             user.Address = model.Address;
@@ -165,14 +165,14 @@ namespace UserService.Services
             user.State = model.State;
             user.ZipCode = model.ZipCode;
             user.PhoneNumber = model.PhoneNumber;
-            user.LastProfileUpdate = DateTime.UtcNow; // Update the profile update timestamp
+            user.LastProfileUpdate = DateTime.UtcNow; 
 
-            var result = await _userManager.UpdateAsync(user); // Save the changes
+            var result = await _userManager.UpdateAsync(user); 
 
-            return result.Succeeded; // Return the result of the update operation
+            return result.Succeeded; 
         }
 
-        // Generate JWT token
+        
         private async Task<string> GenerateJwtToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -185,7 +185,7 @@ namespace UserService.Services
                 new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
 
-            var roles = await _userManager.GetRolesAsync(user); // Assuming roles are required
+            var roles = await _userManager.GetRolesAsync(user); 
             foreach (var role in roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));

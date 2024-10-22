@@ -18,7 +18,7 @@ namespace UserService.Controllers
             _userService = userService;
         }
 
-        // 1. Update User Profile
+        
         [Authorize]
         [HttpPut("profile")]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileViewModel model)
@@ -39,8 +39,8 @@ namespace UserService.Controllers
             return Ok("Profile updated successfully.");
         }
 
-        // 2. Register a new user, ADMIN only
-        [Authorize(Roles = "Admin")]  // Only Admin can create users
+        
+        [Authorize(Roles = "Admin")]  
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
         {
@@ -59,7 +59,7 @@ namespace UserService.Controllers
             return Ok("User registered successfully.");
         }
 
-        // 3. User Login
+        
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginViewModel model)
         {
@@ -78,7 +78,7 @@ namespace UserService.Controllers
             return Ok(new { Token = token });
         }
 
-        // 4. Get Current User Info
+        
         [HttpGet("me")]
         public async Task<IActionResult> GetCurrentUser()
         {
@@ -93,7 +93,7 @@ namespace UserService.Controllers
             return Ok(user);
         }
 
-        // 5. Reset Password
+        
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordViewModel model)
         {
@@ -112,7 +112,7 @@ namespace UserService.Controllers
             return Ok("Password reset successfully.");
         }
 
-        // 6. Delete User Account
+        
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
@@ -127,8 +127,8 @@ namespace UserService.Controllers
             return Ok("User deleted successfully.");
         }
 
-        // 7. Get All Users
-        [Authorize(Roles = "Admin")]  // Only Admin can access this endpoint
+        
+        [Authorize(Roles = "Admin")]  
         [HttpGet("all-users")]
         public async Task<IActionResult> GetAllUsers()
         {
