@@ -54,7 +54,6 @@ namespace ShipmentService.Repositories
             }
         }
 
-        // Method to retrieve paginated shipments
         public async Task<IEnumerable<Shipment>> GetShipmentsPaginatedAsync(int page, int pageSize)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -64,13 +63,13 @@ namespace ShipmentService.Repositories
                               OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
                 return await connection.QueryAsync<Shipment>(query, new
                 {
-                    Offset = (page - 1) * pageSize,  // Calculate how many records to skip
-                    PageSize = pageSize  // Number of records to fetch
+                    Offset = (page - 1) * pageSize,  
+                    PageSize = pageSize  
                 });
             }
         }
 
-        // Method to get total count of shipments (for pagination)
+        
         public async Task<int> GetTotalShipmentsCountAsync()
         {
             using (var connection = new SqlConnection(_connectionString))

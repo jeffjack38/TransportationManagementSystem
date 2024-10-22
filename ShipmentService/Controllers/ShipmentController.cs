@@ -20,7 +20,7 @@ namespace ShipmentService.Controllers
             _shipmentRepository = shipmentRepository;
         }
 
-        // GET /api/shipments
+        // GET /api/shipment
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ShipmentDTO>>> GetShipments([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
@@ -42,7 +42,7 @@ namespace ShipmentService.Controllers
         }
 
 
-        // POST /api/shipments
+        // POST /api/shipment
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult> CreateShipment([FromBody] ShipmentDTO shipmentDTO)
@@ -64,7 +64,7 @@ namespace ShipmentService.Controllers
             return CreatedAtAction(nameof(GetShipmentById), new { id = shipment.ShipmentId }, shipmentDTO);
         }
 
-        // GET /api/shipments/{id}
+        // GET /api/shipment/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<ShipmentDTO>> GetShipmentById(int id)
         {
@@ -87,7 +87,7 @@ namespace ShipmentService.Controllers
             return Ok(shipmentDTO);
         }
 
-        // PUT /api/shipments/{id}
+        // PUT /api/shipment/{id}
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateShipment(int id, [FromBody] ShipmentDTO shipmentDTO)
@@ -110,8 +110,8 @@ namespace ShipmentService.Controllers
             return Ok("Shipment updated successfully.");
         }
 
-        // DELETE /api/shipments/{id}
-        [Authorize(Roles = "Admin")]  // Only Admin can delete shipments
+        // DELETE /api/shipment/{id}
+        [Authorize(Roles = "Admin")]  
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteShipment(int id)
         {

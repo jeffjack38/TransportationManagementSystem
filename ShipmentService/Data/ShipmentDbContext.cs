@@ -18,11 +18,11 @@ namespace ShipmentService.Data
 
             modelBuilder.Entity<Shipment>()
                 .HasIndex(s => s.ShipmentId)
-                .HasDatabaseName("IDX_ShipmentId");  // Use HasDatabaseName
+                .HasDatabaseName("IDX_ShipmentId");  
 
             modelBuilder.Entity<Shipment>()
                 .HasIndex(s => s.Status)
-                .HasDatabaseName("IDX_Status");  // Use HasDatabaseName
+                .HasDatabaseName("IDX_Status");  
         }
     }
 }

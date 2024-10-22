@@ -7,7 +7,7 @@ namespace BookingService.Services
     public class BookingServices
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IBookingRepository _bookingRepository;  // Inject BookingRepository
+        private readonly IBookingRepository _bookingRepository;  
         private readonly string _shipmentServiceUrl;
 
         public BookingServices(IHttpClientFactory httpClientFactory, IBookingRepository bookingRepository, IConfiguration configuration)
@@ -32,12 +32,12 @@ namespace BookingService.Services
             return false;
         }
 
-        // Create a booking if shipment is available
+        
         public async Task<bool> CreateBookingAsync(BookingDTO bookingDTO)
         {
             Console.WriteLine($"Attempting to create booking for ShipmentId: {bookingDTO.ShipmentId}");
 
-            // Check if the shipment exists and is available
+           
             bool isShipmentAvailable = await IsShipmentAvailableAsync(bookingDTO.ShipmentId);
 
             if (!isShipmentAvailable)
