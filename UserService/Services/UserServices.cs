@@ -191,7 +191,6 @@ namespace UserService.Services
             {
                 return false; 
             }
-
             
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
@@ -200,14 +199,46 @@ namespace UserService.Services
             user.State = model.State;
             user.ZipCode = model.ZipCode;
             user.PhoneNumber = model.PhoneNumber;
-            user.LastProfileUpdate = DateTime.UtcNow; 
-            user.Role = model.Role;
+            user.LastProfileUpdate = DateTime.UtcNow;
 
             //UpdateAsync - built in method of UserManager, takes a User object as a parameter, updates the user in the db
             var result = await _userManager.UpdateAsync(user); 
 
             return result.Succeeded; //return bool whether update was successful
         }
+
+        //ADMIN UPDATE PROFILE/USER PROFILE
+        //find user by id, verify if user exists, update user properties, update user role, save changes with UpdateAsync, return success status
+        public async Task<bool> UpdateUserProfileAsync(string userId, AdminUpdateProfileViewModel model)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return false;
+            }
+
+            // Update basic user profile fields
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.Address = model.Address;
+            user.City = model.City;
+            user.State = model.State;
+            user.ZipCode = model.ZipCode;
+            user.PhoneNumber = model.PhoneNumber;
+            user.LastProfileUpdate = DateTime.UtcNow;
+
+            // Role update for Admin
+            if (!string.IsNullOrEmpty(model.Role))
+            {
+                var currentRoles = await _userManager.GetRolesAsync(user);
+                await _userManager.RemoveFromRolesAsync(user, currentRoles);
+                await _userManager.AddToRoleAsync(user, model.Role);
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+            return result.Succeeded;
+        }
+
 
         //JWT TOKEN
         //initialize token handler and key, define claims, add role claims, configure token descriptor, create and return the JWT

@@ -2,11 +2,13 @@
 
 namespace UserService.DTOs
 {
-    public class UpdateProfileViewModel
+    public class AdminUpdateProfileViewModel
     {
+        [Required]
         [StringLength(50, ErrorMessage = "First Name cannot exceed 50 characters.")]
         public string FirstName { get; set; }
 
+        [Required]
         [StringLength(50, ErrorMessage = "Last Name cannot exceed 50 characters.")]
         public string LastName { get; set; }
 
@@ -25,5 +27,7 @@ namespace UserService.DTOs
         [Phone(ErrorMessage = "Invalid phone number format.")]
         public string PhoneNumber { get; set; }
 
+        [StringLength(50, ErrorMessage = "Role cannot exceed 50 characters.")]
+        public string Role { get; set; } // Only admins can update roles
     }
 }
