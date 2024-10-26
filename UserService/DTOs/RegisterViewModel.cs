@@ -8,6 +8,7 @@ namespace UserService.DTOs
         [EmailAddress(ErrorMessage = "Invalid email address.")]
         public string Email { get; set; }
 
+        //Passwords min length = 6, must contain one number, upper and lowercase letter, and no two identical consecutive characters
         [Required(ErrorMessage = "Password is required.")]
         [DataType(DataType.Password)]
         [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters long.")]
